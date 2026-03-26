@@ -17,22 +17,21 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		select {
-		case <-time.After(2 * time.Second):
+		case <-time.After(10 * time.Second):
 			w.Write([]byte("hello"))
 		case <-r.Context().Done():
 			return
 		}
 	})
 
-	server := &http.Server{
+	srv := http.Server{
 		Addr:    "localhost:3000",
 		Handler: mux,
 	}
 	errCh := make(chan error, 1)
 	go func() {
 		log.Println("server started")
-		err := server.ListenAndServe()
-		if !errors.Is(err, http.ErrServerClosed) {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			errCh <- err
 			return
 		}
@@ -44,14 +43,14 @@ func main() {
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := server.Shutdown(shutdownCtx); err != nil {
-		log.Printf("graceful shutdown failed %v", err)
-		_ = server.Close()
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		log.Print("shutdown failed")
+		_ = srv.Close()
 	}
 
 	if err := <-errCh; err != nil {
-		log.Fatalf("server error: %v", err)
+		log.Printf("server error %v", err)
 	}
 
-	log.Println("server stopped")
+	log.Print("server gracefully stopped")
 }
