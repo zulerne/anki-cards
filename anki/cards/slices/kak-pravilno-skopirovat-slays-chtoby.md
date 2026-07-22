@@ -13,4 +13,5 @@ tags:
 
 `dst := make([]int, len(src))` + `copy(dst, src)`.
 
-Или в Go 1.21+: `dst := slices.Clone(src)`. Оба создают новый базовый массив.
+Или в Go 1.21+: `dst := slices.Clone(src)`. Это shallow copy: элементы-указатели
+не клонируются. `slices.Clone` также сохраняет nilness исходного слайса.
