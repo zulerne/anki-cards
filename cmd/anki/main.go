@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/zulerne/anki-cards/internal/card"
 	"github.com/zulerne/anki-cards/internal/export"
@@ -14,7 +13,7 @@ const (
 	cardsDir     = "anki/cards"
 	mediaDir     = "anki/media"
 	generatedDir = "anki/generated"
-	outputFile   = "anki/generated/cards.tsv"
+	apkgFile     = "anki/generated/go-deck.apkg"
 )
 
 var allowedDecks = []string{"Go"}
@@ -64,19 +63,10 @@ func run() error {
 		return fmt.Errorf("create generated dir: %w", err)
 	}
 
-	f, err := os.Create(filepath.Clean(outputFile))
-	if err != nil {
-		return fmt.Errorf("create output: %w", err)
+	if err := export.WriteAPKG(apkgFile, cards, mediaDir); err != nil {
+		return fmt.Errorf("export apkg: %w", err)
 	}
 
-	if err := export.WriteCSV(f, cards); err != nil {
-		_ = f.Close()
-		return fmt.Errorf("export csv: %w", err)
-	}
-	if err := f.Close(); err != nil {
-		return fmt.Errorf("close output: %w", err)
-	}
-
-	fmt.Printf("exported to %s\n", outputFile)
+	fmt.Printf("exported %d cards to %s\n", len(cards), apkgFile)
 	return nil
 }

@@ -57,3 +57,13 @@ tasks:
     desc: Run Go linter on the anki tooling
     cmds:
       - golangci-lint run ./cmd/anki/... ./internal/...
+
+  anki:release:
+    desc: Tag and push a new release (triggers GitHub Actions)
+    vars:
+      TAG:
+        sh: date +%y.%m.%d
+    cmds:
+      - task: anki:build
+      - git tag {{.TAG}}
+      - git push origin {{.TAG}}
