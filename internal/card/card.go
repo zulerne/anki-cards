@@ -138,26 +138,37 @@ func parseFrontmatter(fm string) (id, deck string, tags []string, err error) {
 }
 
 func parseBody(body string) (front, back string, err error) {
-	const (
-		frontHeader = "# Front"
-		backHeader  = "# Back"
-	)
+	lines := strings.Split(body, "\n")
+	frontHeader, backHeader := -1, -1
+	inCodeBlock := false
+	for i, line := range lines {
+		if strings.HasPrefix(strings.TrimSpace(line), "```") {
+			inCodeBlock = !inCodeBlock
+			continue
+		}
+		if inCodeBlock {
+			continue
+		}
+		switch strings.TrimSpace(line) {
+		case "# Front":
+			frontHeader = i
+		case "# Back":
+			backHeader = i
+		}
+	}
 
-	frontIdx := strings.Index(body, frontHeader)
-	backIdx := strings.Index(body, backHeader)
-
-	if frontIdx == -1 {
+	if frontHeader == -1 {
 		return "", "", errors.New("missing # Front section")
 	}
-	if backIdx == -1 {
+	if backHeader == -1 {
 		return "", "", errors.New("missing # Back section")
 	}
-	if frontIdx > backIdx {
+	if frontHeader > backHeader {
 		return "", "", errors.New("# Front must come before # Back")
 	}
 
-	front = strings.TrimSpace(body[frontIdx+len(frontHeader) : backIdx])
-	back = strings.TrimSpace(body[backIdx+len(backHeader):])
+	front = strings.TrimSpace(strings.Join(lines[frontHeader+1:backHeader], "\n"))
+	back = strings.TrimSpace(strings.Join(lines[backHeader+1:], "\n"))
 
 	return front, back, nil
 }

@@ -194,38 +194,38 @@ func insertMetadata(db *sql.DB, templateDir string) error {
 
 	decks := map[string]any{
 		"1": map[string]any{
-			"id":             1,
-			"mod":            now,
-			"name":           "Default",
-			"usn":            0,
-			"lrnToday":       []int{0, 0},
-			"revToday":       []int{0, 0},
-			"newToday":       []int{0, 0},
-			"timeToday":      []int{0, 0},
-			"collapsed":      false,
+			"id":               1,
+			"mod":              now,
+			"name":             "Default",
+			"usn":              0,
+			"lrnToday":         []int{0, 0},
+			"revToday":         []int{0, 0},
+			"newToday":         []int{0, 0},
+			"timeToday":        []int{0, 0},
+			"collapsed":        false,
 			"browserCollapsed": false,
-			"desc":           "",
-			"dyn":            0,
-			"conf":           1,
-			"extendNew":      0,
-			"extendRev":      0,
+			"desc":             "",
+			"dyn":              0,
+			"conf":             1,
+			"extendNew":        0,
+			"extendRev":        0,
 		},
 		fmt.Sprintf("%d", deckID): map[string]any{
-			"id":             deckID,
-			"mod":            now,
-			"name":           "Go",
-			"usn":            -1,
-			"lrnToday":       []int{0, 0},
-			"revToday":       []int{0, 0},
-			"newToday":       []int{0, 0},
-			"timeToday":      []int{0, 0},
-			"collapsed":      false,
+			"id":               deckID,
+			"mod":              now,
+			"name":             "Go",
+			"usn":              -1,
+			"lrnToday":         []int{0, 0},
+			"revToday":         []int{0, 0},
+			"newToday":         []int{0, 0},
+			"timeToday":        []int{0, 0},
+			"collapsed":        false,
 			"browserCollapsed": false,
-			"desc":           "",
-			"dyn":            0,
-			"conf":           1,
-			"extendNew":      0,
-			"extendRev":      0,
+			"desc":             "",
+			"dyn":              0,
+			"conf":             1,
+			"extendNew":        0,
+			"extendRev":        0,
 		},
 	}
 
@@ -240,27 +240,27 @@ func insertMetadata(db *sql.DB, templateDir string) error {
 			"timer":    0,
 			"replayq":  true,
 			"new": map[string]any{
-				"bury":       false,
-				"delays":     []float64{1, 10},
+				"bury":          false,
+				"delays":        []float64{1, 10},
 				"initialFactor": 2500,
-				"ints":       []int{1, 4, 0},
-				"order":      1,
-				"perDay":     20,
+				"ints":          []int{1, 4, 0},
+				"order":         1,
+				"perDay":        20,
 			},
 			"rev": map[string]any{
-				"bury":     false,
-				"ease4":    1.3,
-				"ivlFct":   1,
-				"maxIvl":   36500,
-				"perDay":   200,
+				"bury":       false,
+				"ease4":      1.3,
+				"ivlFct":     1,
+				"maxIvl":     36500,
+				"perDay":     200,
 				"hardFactor": 1.2,
 			},
 			"lapse": map[string]any{
-				"delays":   []float64{10},
+				"delays":      []float64{10},
 				"leechAction": 1,
 				"leechFails":  8,
-				"minInt":   1,
-				"mult":     0,
+				"minInt":      1,
+				"mult":        0,
 			},
 		},
 	}
@@ -280,12 +280,24 @@ func insertMetadata(db *sql.DB, templateDir string) error {
 		"addToCur":      true,
 	}
 
-	modelsJSON, _ := json.Marshal(models)
-	decksJSON, _ := json.Marshal(decks)
-	dconfJSON, _ := json.Marshal(dconf)
-	confJSON, _ := json.Marshal(conf)
+	modelsJSON, err := json.Marshal(models)
+	if err != nil {
+		return fmt.Errorf("marshal models: %w", err)
+	}
+	decksJSON, err := json.Marshal(decks)
+	if err != nil {
+		return fmt.Errorf("marshal decks: %w", err)
+	}
+	dconfJSON, err := json.Marshal(dconf)
+	if err != nil {
+		return fmt.Errorf("marshal deck config: %w", err)
+	}
+	confJSON, err := json.Marshal(conf)
+	if err != nil {
+		return fmt.Errorf("marshal collection config: %w", err)
+	}
 
-	_, err := db.Exec(`INSERT INTO col VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+	_, err = db.Exec(`INSERT INTO col VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		1, now, nowMs, nowMs, 11, 0, -1, 0,
 		string(confJSON), string(modelsJSON), string(decksJSON), string(dconfJSON), "{}")
 	return err
@@ -322,10 +334,7 @@ func insertCard(db *sql.DB, c card.Card) error {
 
 func guidToID(id string) int64 {
 	h := sha256.Sum256([]byte(id))
-	v := int64(binary.BigEndian.Uint64(h[:8]))
-	if v < 0 {
-		v = -v
-	}
+	v := int64(binary.BigEndian.Uint64(h[:8]) & (1<<63 - 1))
 	if v < 1_000_000_000_000 {
 		v += 1_000_000_000_000
 	}
@@ -380,12 +389,14 @@ func packZip(outputPath, dbPath string, mediaFiles map[string]string) error {
 		return fmt.Errorf("create output: %w", err)
 	}
 
+	defer func() { _ = f.Close() }()
 	zw := zip.NewWriter(f)
 
 	dbFile, err := os.Open(dbPath)
 	if err != nil {
 		return fmt.Errorf("open db: %w", err)
 	}
+	defer func() { _ = dbFile.Close() }()
 
 	w, err := zw.Create("collection.anki2")
 	if err != nil {
@@ -394,7 +405,6 @@ func packZip(outputPath, dbPath string, mediaFiles map[string]string) error {
 	if _, err := io.Copy(w, dbFile); err != nil {
 		return fmt.Errorf("copy db: %w", err)
 	}
-	_ = dbFile.Close()
 
 	mediaMap := make(map[string]string)
 	i := 0
@@ -419,7 +429,10 @@ func packZip(outputPath, dbPath string, mediaFiles map[string]string) error {
 		i++
 	}
 
-	mediaJSON, _ := json.Marshal(mediaMap)
+	mediaJSON, err := json.Marshal(mediaMap)
+	if err != nil {
+		return fmt.Errorf("marshal media map: %w", err)
+	}
 	mw, err := zw.Create("media")
 	if err != nil {
 		return fmt.Errorf("create media json: %w", err)

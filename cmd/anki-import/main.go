@@ -8,12 +8,14 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 )
 
 const (
 	ankiConnectURL = "http://localhost:8765"
 	deckName       = "Go Interview"
 	outputDir      = "anki/cards"
+	requestTimeout = 10 * time.Second
 )
 
 type ankiRequest struct {
@@ -28,9 +30,9 @@ type findNotesResponse struct {
 }
 
 type noteInfo struct {
-	NoteID int64             `json:"noteId"`
-	Tags   []string          `json:"tags"`
-	Fields map[string]field  `json:"fields"`
+	NoteID int64            `json:"noteId"`
+	Tags   []string         `json:"tags"`
+	Fields map[string]field `json:"fields"`
 }
 
 type field struct {
@@ -127,11 +129,15 @@ func ankiCall(req ankiRequest, result any) error {
 		return fmt.Errorf("marshal request: %w", err)
 	}
 
-	resp, err := http.Post(ankiConnectURL, "application/json", strings.NewReader(string(body)))
+	client := &http.Client{Timeout: requestTimeout}
+	resp, err := client.Post(ankiConnectURL, "application/json", strings.NewReader(string(body)))
 	if err != nil {
 		return fmt.Errorf("post: %w", err)
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		return fmt.Errorf("anki returned HTTP status %s", resp.Status)
+	}
 
 	if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
 		return fmt.Errorf("decode response: %w", err)

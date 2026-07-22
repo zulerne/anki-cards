@@ -2,6 +2,7 @@ package render
 
 import (
 	"strings"
+	"unicode"
 )
 
 func MarkdownToHTML(md string) string {
@@ -26,7 +27,7 @@ func MarkdownToHTML(md string) string {
 			if i < len(lines) {
 				i++
 			}
-			if lang != "" {
+			if lang = safeLanguage(lang); lang != "" {
 				out.WriteString(`<pre><code class="language-`)
 				out.WriteString(lang)
 				out.WriteString(`">`)
@@ -84,6 +85,15 @@ func MarkdownToHTML(md string) string {
 	}
 
 	return strings.TrimSpace(out.String())
+}
+
+func safeLanguage(lang string) string {
+	for _, r := range lang {
+		if !(unicode.IsLetter(r) || unicode.IsDigit(r) || r == '-' || r == '_') {
+			return ""
+		}
+	}
+	return lang
 }
 
 func inlineFormat(s string) string {

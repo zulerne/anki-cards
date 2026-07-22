@@ -79,3 +79,26 @@ A.
 		t.Fatal("expected error for missing # Front")
 	}
 }
+
+func TestParse_IgnoresSectionNamesInsideCodeBlock(t *testing.T) {
+	input := "" +
+		"---\n" +
+		"id: code_headings\n" +
+		"deck: Go\n" +
+		"---\n\n" +
+		"# Front\n\n" +
+		"Example:\n\n" +
+		"```markdown\n" +
+		"# Back\n" +
+		"```\n\n" +
+		"# Back\n\n" +
+		"Answer.\n"
+
+	c, err := Parse(input, "test.md")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if c.Front == "" || c.Back != "Answer." {
+		t.Fatalf("front/back = %q / %q", c.Front, c.Back)
+	}
+}
