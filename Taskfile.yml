@@ -61,9 +61,20 @@ tasks:
   anki:release:
     desc: Tag and push a new release (triggers GitHub Actions)
     vars:
-      TAG:
+      DATE:
         sh: date +%y.%m.%d
+      TAG:
+        sh: |
+          base=$(date +%y.%m.%d)
+          if ! git tag -l "$base" | grep -q .; then
+            echo "$base"
+          else
+            n=1
+            while git tag -l "${base}.${n}" | grep -q .; do n=$((n+1)); done
+            echo "${base}.${n}"
+          fi
     cmds:
       - task: anki:build
       - git tag {{.TAG}}
       - git push origin {{.TAG}}
+      - echo "Released {{.TAG}}"
