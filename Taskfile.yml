@@ -2,13 +2,13 @@ version: "3"
 
 tasks:
   day:
-    desc: Create today's practice directory (practice/mar22, etc.)
+    desc: Create today's daily practice directory (practice/daily/mar22, etc.)
     vars:
       PKG:
         sh: date +%b%d | tr '[:upper:]' '[:lower:]'
     cmds:
-      - mkdir -p practice/{{.PKG}}
-      - 'echo "Ready: practice/{{.PKG}}"'
+      - mkdir -p practice/daily/{{.PKG}}
+      - 'echo "Ready: practice/daily/{{.PKG}}"'
 
   new:
     desc: Create a new topic for today (task new -- topic-name)
@@ -16,13 +16,13 @@ tasks:
       PKG:
         sh: date +%b%d | tr '[:upper:]' '[:lower:]'
     cmds:
-      - mkdir -p practice/{{.PKG}}/{{.CLI_ARGS}}
+      - mkdir -p practice/daily/{{.PKG}}/{{.CLI_ARGS}}
       - |
-        if [ ! -f practice/{{.PKG}}/{{.CLI_ARGS}}/main.go ]; then
-          printf 'package main\n\nfunc main() {}\n' > practice/{{.PKG}}/{{.CLI_ARGS}}/main.go
-          echo "Created practice/{{.PKG}}/{{.CLI_ARGS}}/main.go"
+        if [ ! -f practice/daily/{{.PKG}}/{{.CLI_ARGS}}/main.go ]; then
+          printf 'package main\n\nfunc main() {}\n' > practice/daily/{{.PKG}}/{{.CLI_ARGS}}/main.go
+          echo "Created practice/daily/{{.PKG}}/{{.CLI_ARGS}}/main.go"
         else
-          echo "practice/{{.PKG}}/{{.CLI_ARGS}} already exists"
+          echo "practice/daily/{{.PKG}}/{{.CLI_ARGS}} already exists"
         fi
 
   run:
@@ -31,7 +31,7 @@ tasks:
       PKG:
         sh: date +%b%d | tr '[:upper:]' '[:lower:]'
     cmds:
-      - go run ./practice/{{.PKG}}/{{.CLI_ARGS}}/
+      - go run ./practice/daily/{{.PKG}}/{{.CLI_ARGS}}/
 
   build:
     desc: Build all packages
@@ -42,6 +42,11 @@ tasks:
     desc: Run all tests with race detector
     cmds:
       - go test -race ./...
+
+  reference:test:
+    desc: Test all canonical practice examples
+    cmds:
+      - go test ./practice/reference/...
 
   anki:build:
     desc: Build and export Anki cards
