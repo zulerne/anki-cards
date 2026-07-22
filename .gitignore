@@ -35,6 +35,9 @@ go.work.sum
 .DS_Store
 Thumbs.db
 
+# Generated Anki output
+anki/generated/
+
 # AI assistants
 .gemini/
 !.claude/

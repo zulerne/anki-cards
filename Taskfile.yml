@@ -42,3 +42,18 @@ tasks:
     desc: Run all tests with race detector
     cmds:
       - go test -race ./...
+
+  anki:build:
+    desc: Build and export Anki cards
+    cmds:
+      - go run ./cmd/anki
+
+  anki:check:
+    desc: Lint cards (format + knowledge checks)
+    cmds:
+      - go run ./cmd/anki
+
+  anki:lint:
+    desc: Run Go linter on the anki tooling
+    cmds:
+      - golangci-lint run ./cmd/anki/... ./internal/...

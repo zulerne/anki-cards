@@ -1,0 +1,63 @@
+.card {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #1a1a1a;
+}
+
+.card.night_mode {
+  color: #e0e0e0;
+  background: #1e1e1e;
+}
+
+.question {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.answer {
+  margin-top: 12px;
+}
+
+.answer code,
+.question code {
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.9em;
+  background: #f4f4f4;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.card.night_mode code {
+  background: #2d2d2d;
+}
+
+.answer pre {
+  background: #f4f4f4;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.card.night_mode pre {
+  background: #2d2d2d;
+}
+
+.tags {
+  margin-top: 16px;
+  font-size: 0.8em;
+  color: #888;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 16px 0;
+}
+
+.card.night_mode hr {
+  border-top-color: #444;
+}
