@@ -12,6 +12,7 @@ import (
 const (
 	cardsDir     = "anki/cards"
 	mediaDir     = "anki/media"
+	templateDir  = "anki/templates"
 	generatedDir = "anki/generated"
 	apkgFile     = "anki/generated/go-deck.apkg"
 )
@@ -63,7 +64,7 @@ func run() error {
 		return fmt.Errorf("create generated dir: %w", err)
 	}
 
-	if err := export.WriteAPKG(apkgFile, cards, mediaDir); err != nil {
+	if err := export.WriteAPKG(apkgFile, cards, mediaDir, templateDir); err != nil {
 		return fmt.Errorf("export apkg: %w", err)
 	}
 

@@ -16,6 +16,7 @@ import (
 	_ "modernc.org/sqlite"
 
 	"github.com/zulerne/anki-cards/internal/card"
+	"github.com/zulerne/anki-cards/internal/render"
 )
 
 const (
@@ -23,7 +24,7 @@ const (
 	deckID  = 1700000000001
 )
 
-func WriteAPKG(outputPath string, cards []card.Card, mediaDir string) error {
+func WriteAPKG(outputPath string, cards []card.Card, mediaDir, templateDir string) error {
 	tmpDB, err := os.CreateTemp("", "anki-*.db")
 	if err != nil {
 		return fmt.Errorf("create temp db: %w", err)
@@ -32,7 +33,7 @@ func WriteAPKG(outputPath string, cards []card.Card, mediaDir string) error {
 	_ = tmpDB.Close()
 	defer func() { _ = os.Remove(tmpDBPath) }()
 
-	if err := buildDB(tmpDBPath, cards); err != nil {
+	if err := buildDB(tmpDBPath, cards, templateDir); err != nil {
 		return fmt.Errorf("build db: %w", err)
 	}
 
@@ -45,7 +46,7 @@ func WriteAPKG(outputPath string, cards []card.Card, mediaDir string) error {
 	return nil
 }
 
-func buildDB(dbPath string, cards []card.Card) error {
+func buildDB(dbPath string, cards []card.Card, templateDir string) error {
 	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		return fmt.Errorf("open db: %w", err)
@@ -56,7 +57,7 @@ func buildDB(dbPath string, cards []card.Card) error {
 		return fmt.Errorf("create schema: %w", err)
 	}
 
-	if err := insertMetadata(db); err != nil {
+	if err := insertMetadata(db, templateDir); err != nil {
 		return fmt.Errorf("insert metadata: %w", err)
 	}
 
@@ -140,9 +141,20 @@ func createSchema(db *sql.DB) error {
 	return err
 }
 
-func insertMetadata(db *sql.DB) error {
+func insertMetadata(db *sql.DB, templateDir string) error {
 	now := time.Now().Unix()
 	nowMs := time.Now().UnixMilli()
+
+	css := loadTemplate(templateDir, "styling.css")
+	qfmt := loadTemplate(templateDir, "front.html")
+	afmt := loadTemplate(templateDir, "back.html")
+
+	if qfmt == "" {
+		qfmt = `<div class="card"><div class="question">{{Front}}</div></div>`
+	}
+	if afmt == "" {
+		afmt = `<div class="card"><div class="question">{{Front}}</div><hr><div class="answer">{{Back}}</div></div>`
+	}
 
 	models := map[string]any{
 		fmt.Sprintf("%d", modelID): map[string]any{
@@ -157,8 +169,8 @@ func insertMetadata(db *sql.DB) error {
 				{
 					"name":  "Card 1",
 					"ord":   0,
-					"qfmt":  "{{Front}}",
-					"afmt":  "{{FrontSide}}<hr id=answer>{{Back}}",
+					"qfmt":  qfmt,
+					"afmt":  afmt,
 					"bqfmt": "",
 					"bafmt": "",
 					"did":   nil,
@@ -170,8 +182,8 @@ func insertMetadata(db *sql.DB) error {
 				{"name": "Front", "ord": 0, "sticky": false, "rtl": false, "font": "Arial", "size": 20, "media": []any{}},
 				{"name": "Back", "ord": 1, "sticky": false, "rtl": false, "font": "Arial", "size": 20, "media": []any{}},
 			},
-			"css":  ".card { font-family: -apple-system, sans-serif; font-size: 16px; line-height: 1.6; max-width: 640px; margin: 0 auto; padding: 20px; }",
-			"latexPre": "",
+			"css":       css,
+			"latexPre":  "",
 			"latexPost": "",
 			"latexsvg":  false,
 			"req":       [][]any{{0, "all", []int{0}}},
@@ -287,7 +299,9 @@ func insertCard(db *sql.DB, c card.Card) error {
 
 	guid := c.ID
 	tags := " " + strings.Join(c.Tags, " ") + " "
-	flds := c.Front + "\x1f" + c.Back
+	frontHTML := render.MarkdownToHTML(c.Front)
+	backHTML := render.MarkdownToHTML(c.Back)
+	flds := frontHTML + "\x1f" + backHTML
 	sfld := c.Front
 	csum := fieldChecksum(c.Front)
 
@@ -421,4 +435,12 @@ func packZip(outputPath, dbPath string, mediaFiles map[string]string) error {
 		return fmt.Errorf("close file: %w", err)
 	}
 	return nil
+}
+
+func loadTemplate(dir, name string) string {
+	data, err := os.ReadFile(filepath.Join(dir, name))
+	if err != nil {
+		return ""
+	}
+	return string(data)
 }

@@ -11,4 +11,4 @@ tags:
 
 # Back
 
-panic: send on closed channel.
+`panic`: send on closed channel.

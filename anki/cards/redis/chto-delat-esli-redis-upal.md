@@ -11,4 +11,10 @@ tags:
 
 # Back
 
-Redis Sentinel — мониторинг, автоматический failover master->replica.Redis Cluster — шардирование + репликация, автофейловер.В приложении: fallback на БД при недоступности Redis (graceful degradation). Persistence: RDB (снимки) + AOF (журнал операций) для восстановления данных.
+Redis Sentinel — мониторинг, автоматический failover master->replica.
+
+Redis Cluster — шардирование + репликация, автофейловер.
+
+В приложении: fallback на БД при недоступности Redis (graceful degradation).
+
+Persistence: RDB (снимки) + AOF (журнал операций) для восстановления данных.

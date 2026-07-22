@@ -11,4 +11,8 @@ tags:
 
 # Back
 
-Вертикальное (scale up) — мощнее сервер (CPU, RAM). Просто, но есть предел и single point of failure.Горизонтальное (scale out) — больше серверов за load balancer. Сложнее (stateless, shared storage), но без предела и с отказоустойчивостью. Для веб-сервисов обычно горизонтальное.
+**Вертикальное (scale up)** — мощнее сервер (CPU, RAM). Просто, но есть предел и single point of failure.
+
+**Горизонтальное (scale out)** — больше серверов за load balancer. Сложнее (stateless, shared storage), но без предела и с отказоустойчивостью.
+
+Для веб-сервисов обычно горизонтальное.

@@ -11,4 +11,12 @@ tags:
 
 # Back
 
-Read Uncommitted: ничего не предотвращает.Read Committed: предотвращает dirty read.Repeatable Read: предотвращает dirty read + non-repeatable read.Serializable: предотвращает все (dirty read, non-repeatable read, phantom read).Чем выше уровень — тем больше блокировок, ниже производительность.
+Read Uncommitted: ничего не предотвращает.
+
+Read Committed: предотвращает dirty read.
+
+Repeatable Read: предотвращает dirty read + non-repeatable read.
+
+Serializable: предотвращает все (dirty read, non-repeatable read, phantom read).
+
+Чем выше уровень — тем больше блокировок, ниже производительность.

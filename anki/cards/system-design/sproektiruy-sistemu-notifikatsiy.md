@@ -11,4 +11,8 @@ tags:
 
 # Back
 
-Компоненты: Notification Service (API), Router (выбор канала: email/push/SMS), Provider Adapters (SendGrid, FCM, Twilio), Queue (Kafka).Поток: событие -> Kafka -> Router -> адаптер провайдера. Retry с exponential backoff. Дедупликация по idempotency key. Preferences Service для настроек пользователя.
+Компоненты: Notification Service (API), Router (выбор канала: email/push/SMS), Provider Adapters (SendGrid, FCM, Twilio), Queue (Kafka).
+
+Поток: событие -> Kafka -> Router -> адаптер провайдера.
+
+Retry с exponential backoff. Дедупликация по idempotency key. Preferences Service для настроек пользователя.

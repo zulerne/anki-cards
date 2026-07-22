@@ -11,4 +11,12 @@ tags:
 
 # Back
 
-Domain Name System — преобразует доменное имя в IP-адрес. Типы записей:A — домен -> IPv4.AAAA — домен -> IPv6.CNAME — алиас (www.example.com -> example.com).MX — почтовый сервер.TXT — произвольный текст (SPF, DKIM, верификация).
+Domain Name System — преобразует доменное имя в IP-адрес.
+
+Типы записей:
+
+- A — домен -> IPv4.
+- AAAA — домен -> IPv6.
+- CNAME — алиас (www.example.com -> example.com).
+- MX — почтовый сервер.
+- TXT — произвольный текст (SPF, DKIM, верификация).

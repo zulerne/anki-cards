@@ -11,8 +11,16 @@ tags:
 
 # Back
 
-Функции-опции для конфигурации:type Option func(*Server)
+Функции-опции для конфигурации:
+
+```go
+type Option func(*Server)
+
 func WithPort(p int) Option {
     return func(s *Server) { s.port = p }
 }
-srv := NewServer(WithPort(8080), WithTimeout(5*time.Second))Плюсы: читаемый API, опциональные параметры, обратная совместимость. Идиоматичный Go.
+
+srv := NewServer(WithPort(8080), WithTimeout(5*time.Second))
+```
+
+Плюсы: читаемый API, опциональные параметры, обратная совместимость. Идиоматичный Go.

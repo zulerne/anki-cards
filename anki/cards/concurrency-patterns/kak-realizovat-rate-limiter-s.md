@@ -11,9 +11,13 @@ tags:
 
 # Back
 
+```go
 limiter := time.NewTicker(100 * time.Millisecond)
 defer limiter.Stop()
 for req := range requests {
     <-limiter.C // ждём тик
     process(req)
-}Тикер пропускает одно событие за интервал. Для burst — буферизированный канал, заполненный заранее.
+}
+```
+
+Тикер пропускает одно событие за интервал. Для burst — буферизированный канал, заполненный заранее.

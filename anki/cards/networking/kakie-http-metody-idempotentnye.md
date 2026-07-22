@@ -11,4 +11,8 @@ tags:
 
 # Back
 
-Идемпотентные (повторный запрос = тот же результат): GET, PUT, DELETE, HEAD, OPTIONS.НЕ идемпотентные: POST, PATCH.Безопасные (не меняют состояние): GET, HEAD, OPTIONS.
+Идемпотентные (повторный запрос = тот же результат): GET, PUT, DELETE, HEAD, OPTIONS.
+
+НЕ идемпотентные: POST, PATCH.
+
+Безопасные (не меняют состояние): GET, HEAD, OPTIONS.

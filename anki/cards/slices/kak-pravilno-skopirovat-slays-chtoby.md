@@ -11,4 +11,6 @@ tags:
 
 # Back
 
-dst := make([]int, len(src)) + copy(dst, src). Или в Go 1.21+: dst := slices.Clone(src). Оба создают новый базовый массив.
+`dst := make([]int, len(src))` + `copy(dst, src)`.
+
+Или в Go 1.21+: `dst := slices.Clone(src)`. Оба создают новый базовый массив.

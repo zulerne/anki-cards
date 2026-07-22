@@ -7,8 +7,8 @@ tags:
 
 # Front
 
-Что произойдёт при записи в nil-map?
+Что произойдёт при записи в `nil`-map?
 
 # Back
 
-panic: assignment to entry in nil map.
+`panic: assignment to entry in nil map`.

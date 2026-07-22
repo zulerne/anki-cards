@@ -11,4 +11,4 @@ tags:
 
 # Back
 
-panic: close of nil channel.
+`panic`: close of `nil` channel.

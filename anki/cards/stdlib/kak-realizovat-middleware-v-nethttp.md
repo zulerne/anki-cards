@@ -7,13 +7,19 @@ tags:
 
 # Front
 
-Как реализовать middleware в net/http?
+Как реализовать middleware в `net/http`?
 
 # Back
 
-Функция, принимающая http.Handler и возвращающая http.Handler:func logging(next http.Handler) http.Handler {
+Функция, принимающая `http.Handler` и возвращающая `http.Handler`:
+
+```go
+func logging(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         log.Println(r.URL)
         next.ServeHTTP(w, r)
     })
-}Оборачивается цепочкой: logging(auth(handler)).
+}
+```
+
+Оборачивается цепочкой: `logging(auth(handler))`.

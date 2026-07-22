@@ -7,8 +7,12 @@ tags:
 
 # Front
 
-Для чего нужен context.Context?
+Для чего нужен `context.Context`?
 
 # Back
 
-Передача дедлайнов, сигналов отмены и request-scoped значений через цепочку вызовов.Передаётся первым параметром функции: func Do(ctx context.Context, ...).Основной механизм graceful cancellation в Go — горутины слушают ctx.Done() и завершаются.
+Передача дедлайнов, сигналов отмены и request-scoped значений через цепочку вызовов.
+
+Передаётся первым параметром функции: `func Do(ctx context.Context, ...)`.
+
+Основной механизм graceful cancellation в Go — горутины слушают `ctx.Done()` и завершаются.

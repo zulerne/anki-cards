@@ -11,5 +11,13 @@ tags:
 
 # Back
 
-Состояние, когда две или более горутины ждут друг друга и ни одна не может продолжить.Минимальный пример:ch := make(chan int)
-ch <- 1 // main заблокирован навсегдаfatal error: all goroutines are asleep - deadlock!
+Состояние, когда две или более горутины ждут друг друга и ни одна не может продолжить.
+
+Минимальный пример:
+
+```go
+ch := make(chan int)
+ch <- 1 // main заблокирован навсегда
+```
+
+`fatal error: all goroutines are asleep - deadlock!`

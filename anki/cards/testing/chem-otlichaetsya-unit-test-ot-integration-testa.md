@@ -11,4 +11,8 @@ tags:
 
 # Back
 
-Unit: тестирует одну функцию/метод изолированно, зависимости замоканы, быстрый (мс).Integration: проверяет взаимодействие компонентов (БД, HTTP, очереди), медленнее.В Go: integration-тесты часто за build tag //go:build integration или if testing.Short() { t.Skip() }.
+**Unit**: тестирует одну функцию/метод изолированно, зависимости замоканы, быстрый (мс).
+
+**Integration**: проверяет взаимодействие компонентов (БД, HTTP, очереди), медленнее.
+
+В Go: integration-тесты часто за build tag `//go:build integration` или `if testing.Short() { t.Skip() }`.

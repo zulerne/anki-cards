@@ -11,4 +11,4 @@ tags:
 
 # Back
 
-go test -race ./... или go run -race main.go. Race detector работает в runtime.
+`go test -race ./...` или `go run -race main.go`. Race detector работает в runtime.

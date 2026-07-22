@@ -11,4 +11,10 @@ tags:
 
 # Back
 
-CTE (Common Table Expression): WITH name AS (SELECT ...) SELECT ... FROM name. Даёт имя подзапросу, можно ссылаться несколько раз. Читабельнее вложенных подзапросов. Подзапрос — анонимный, инлайнится. CTE может быть рекурсивным (WITH RECURSIVE).
+CTE (Common Table Expression):
+
+```sql
+WITH name AS (SELECT ...) SELECT ... FROM name
+```
+
+Даёт имя подзапросу, можно ссылаться несколько раз. Читабельнее вложенных подзапросов. Подзапрос — анонимный, инлайнится. CTE может быть рекурсивным (`WITH RECURSIVE`).

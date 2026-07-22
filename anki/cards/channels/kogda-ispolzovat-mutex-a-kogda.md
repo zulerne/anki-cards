@@ -11,4 +11,6 @@ tags:
 
 # Back
 
-Mutex — для защиты разделяемого состояния (shared state). Канал — для передачи владения данными между горутинами (communication). Правило Go: «Share memory by communicating, don't communicate by sharing memory.»
+`Mutex` — для защиты разделяемого состояния (shared state). Канал — для передачи владения данными между горутинами (communication).
+
+Правило Go: «Share memory by communicating, don't communicate by sharing memory.»

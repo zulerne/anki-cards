@@ -11,4 +11,8 @@ tags:
 
 # Back
 
-Builder: цепочка методов b.SetPort(8080).SetTimeout(5s).Build() — мутабельный объект, нужен метод Build. Functional Options: New(WithPort(8080)) — иммутабельная конфигурация в конструкторе. FO идиоматичнее в Go, Builder — для сложной пошаговой сборки с валидацией.
+Builder: цепочка методов `b.SetPort(8080).SetTimeout(5s).Build()` — мутабельный объект, нужен метод `Build`.
+
+Functional Options: `New(WithPort(8080))` — иммутабельная конфигурация в конструкторе.
+
+FO идиоматичнее в Go, Builder — для сложной пошаговой сборки с валидацией.

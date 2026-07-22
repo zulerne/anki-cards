@@ -11,4 +11,6 @@ tags:
 
 # Back
 
-Sync (HTTP/gRPC): вызывающий ждёт ответ. Простая логика, но coupling, cascading failures при недоступности.Async (Kafka, RabbitMQ): сообщение в очередь, ответ не ждём. Слабая связанность, отказоустойчивость, но сложнее отладка, eventual consistency.
+Sync (HTTP/gRPC): вызывающий ждёт ответ. Простая логика, но coupling, cascading failures при недоступности.
+
+Async (Kafka, RabbitMQ): сообщение в очередь, ответ не ждём. Слабая связанность, отказоустойчивость, но сложнее отладка, eventual consistency.

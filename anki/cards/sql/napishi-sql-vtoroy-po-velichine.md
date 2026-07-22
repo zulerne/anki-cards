@@ -11,8 +11,18 @@ tags:
 
 # Back
 
-Оконная функция:SELECT salary FROM (
+Оконная функция:
+
+```sql
+SELECT salary FROM (
     SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rn
     FROM employees
-) t WHERE rn = 2;Без оконной функции:SELECT MAX(salary) FROM employees
+) t WHERE rn = 2;
+```
+
+Без оконной функции:
+
+```sql
+SELECT MAX(salary) FROM employees
 WHERE salary < (SELECT MAX(salary) FROM employees);
+```

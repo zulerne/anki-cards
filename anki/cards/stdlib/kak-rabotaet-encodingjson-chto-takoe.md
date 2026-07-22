@@ -7,8 +7,13 @@ tags:
 
 # Front
 
-Как работает encoding/json? Что такое struct tags?
+Как работает `encoding/json`? Что такое struct tags?
 
 # Back
 
-json.Marshal сериализует структуру в JSON, json.Unmarshal — обратно. Struct tags управляют именами и поведением:`json:"name,omitempty"` — имя поля в JSON + пропуск пустых значений.`json:"-"` — игнорировать поле.
+`json.Marshal` сериализует структуру в JSON, `json.Unmarshal` — обратно.
+
+Struct tags управляют именами и поведением:
+
+- `json:"name,omitempty"` — имя поля в JSON + пропуск пустых значений.
+- `json:"-"` — игнорировать поле.

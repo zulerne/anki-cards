@@ -11,4 +11,4 @@ tags:
 
 # Back
 
-panic: close of closed channel.
+`panic`: close of closed channel.
