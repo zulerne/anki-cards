@@ -12,7 +12,8 @@ task build                # build all packages
 task test                 # run all tests with race detector
 ```
 
-Дневниковые решения находятся в `practice/daily/<date>/<topic>`.
+Дневниковые решения находятся в `practice/daily/<date>/<topic>` и не хранятся
+в Git. Для периодической очистки используй `task daily:clean`.
 
 Эталонные runnable-примеры по темам находятся в
 [`practice/reference`](practice/reference/README.md). Дневниковые решения

@@ -25,6 +25,11 @@ tasks:
           echo "practice/daily/{{.PKG}}/{{.CLI_ARGS}} already exists"
         fi
 
+  daily:clean:
+    desc: Remove local daily practice while keeping the directory
+    cmds:
+      - rm -rf practice/daily/*
+
   run:
     desc: Run a topic (task run -- topic-name)
     vars:
