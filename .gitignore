@@ -39,7 +39,6 @@ Thumbs.db
 anki/generated/
 
 # Local daily practice scratch
-practice/daily/*
 !practice/daily/.gitkeep
 
 # AI assistants
