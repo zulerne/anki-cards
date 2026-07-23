@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 )
 
 func logging(next http.Handler) http.Handler {
@@ -26,5 +27,9 @@ func main() {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		fmt.Fprintln(w, "ok")
 	})
-	_ = logging(auth(handler))
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "/", nil)
+	request.Header.Set("Authorization", "demo")
+	logging(auth(handler)).ServeHTTP(recorder, request)
+	fmt.Print(recorder.Body.String())
 }

@@ -1,13 +1,9 @@
 package main
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"net/http"
-	"os/signal"
-	"syscall"
-	"time"
+	"net/http/httptest"
 )
 
 func main() {
@@ -16,25 +12,11 @@ func main() {
 		fmt.Fprintf(w, "item %s\n", r.PathValue("id"))
 	})
 
-	server := &http.Server{Addr: ":8080", Handler: mux}
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
-	serverErr := make(chan error, 1)
-	go func() {
-		serverErr <- server.ListenAndServe()
-	}()
-
-	select {
-	case <-ctx.Done():
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		if err := server.Shutdown(shutdownCtx); err != nil {
-			panic(err)
-		}
-	case err := <-serverErr:
-		if !errors.Is(err, http.ErrServerClosed) {
-			panic(err)
-		}
+	request := httptest.NewRequest(http.MethodGet, "/items/42", nil)
+	recorder := httptest.NewRecorder()
+	mux.ServeHTTP(recorder, request)
+	if recorder.Code != http.StatusOK {
+		panic(fmt.Sprintf("unexpected status: %d", recorder.Code))
 	}
+	fmt.Print(recorder.Body.String())
 }

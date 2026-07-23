@@ -24,44 +24,28 @@ func worker(ctx context.Context, jobs <-chan int, results chan<- int) {
 	}
 }
 
-func run(ctx context.Context, jobs []int, workerCount int) []int {
-	ctx, cancel := context.WithCancel(ctx)
+func main() {
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-
-	jobCh := make(chan int)
-	resultCh := make(chan int)
+	jobs := make(chan int)
+	results := make(chan int)
 	var wg sync.WaitGroup
 
-	for range workerCount {
-		wg.Go(func() {
-			worker(ctx, jobCh, resultCh)
-		})
+	for range 2 {
+		wg.Go(func() { worker(ctx, jobs, results) })
 	}
-
 	go func() {
-		defer close(jobCh)
-		for _, job := range jobs {
-			select {
-			case jobCh <- job:
-			case <-ctx.Done():
-				return
-			}
+		defer close(jobs)
+		for _, job := range []int{1, 2, 3, 4} {
+			jobs <- job
 		}
 	}()
-
 	go func() {
 		wg.Wait()
-		close(resultCh)
+		close(results)
 	}()
 
-	var results []int
-	for result := range resultCh {
-		results = append(results, result)
+	for result := range results {
+		fmt.Println(result)
 	}
-	return results
-}
-
-func main() {
-	results := run(context.Background(), []int{1, 2, 3, 4}, 2)
-	fmt.Println(results)
 }
