@@ -18,7 +18,6 @@ func TestAdd(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test := test
 		t.Run(test.name, func(t *testing.T) {
 			if got := add(test.a, test.b); got != test.want {
 				t.Fatalf("add(%d, %d) = %d, want %d", test.a, test.b, got, test.want)

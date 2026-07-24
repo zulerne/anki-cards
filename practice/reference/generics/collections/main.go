@@ -6,14 +6,27 @@ import (
 	"slices"
 )
 
+func Filter[T any](s []T, keep func(T) bool) []T {
+	result := make([]T, 0, len(s))
+	for _, v := range s {
+		if keep(v) {
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
+func Keys[K comparable, V any](m map[K]V) []K {
+	return slices.Collect(maps.Keys(m))
+}
+
 func main() {
-	values := []int{4, 1, 3, 2}
-	slices.Sort(values)
+	nums := []int{1, 2, 3, 4, 5, 6}
+	even := Filter(nums, func(n int) bool { return n%2 == 0 })
+	fmt.Println(even)
 
-	original := map[string]int{"go": 1}
-	clone := maps.Clone(original)
-	clone["cards"] = 2
-
-	fmt.Println(values)
-	fmt.Println(original, clone)
+	m := map[string]int{"go": 1, "rust": 2, "zig": 3}
+	keys := Keys(m)
+	slices.Sort(keys)
+	fmt.Println(keys)
 }

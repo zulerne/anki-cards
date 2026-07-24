@@ -10,7 +10,6 @@ func fanIn(inputs ...<-chan int) <-chan int {
 	var wg sync.WaitGroup
 
 	for _, input := range inputs {
-		input := input
 		wg.Go(func() {
 			for value := range input {
 				out <- value

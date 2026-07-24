@@ -12,7 +12,6 @@ func main() {
 	results := make(chan int, 2)
 
 	for _, value := range []int{2, 4} {
-		value := value
 		g.Go(func() error {
 			select {
 			case results <- value * value:
