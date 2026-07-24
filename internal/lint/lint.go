@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"unicode"
 
 	"github.com/zulerne/anki-cards/internal/card"
 )
@@ -43,6 +44,7 @@ func Check(cards []card.Card, cfg Config) []Issue {
 	issues = append(issues, checkEmptyFields(cards)...)
 	issues = append(issues, checkDecks(cards, cfg.AllowedDecks)...)
 	issues = append(issues, checkMedia(cards, cfg.MediaDir)...)
+	issues = append(issues, checkHardWrap(cards)...)
 
 	return issues
 }
@@ -166,4 +168,67 @@ func extractMediaRefs(text string) []string {
 		text = text[end+1:]
 	}
 	return refs
+}
+
+func checkHardWrap(cards []card.Card) []Issue {
+	var issues []Issue
+
+	for _, c := range cards {
+		for _, section := range []string{c.Front, c.Back} {
+			if hasHardWrap(section) {
+				issues = append(issues, Issue{
+					Severity: Warning,
+					FilePath: c.FilePath,
+					Message:  "text has hard-wrapped lines — join into single-line paragraphs",
+				})
+				break
+			}
+		}
+	}
+	return issues
+}
+
+func hasHardWrap(text string) bool {
+	lines := strings.Split(text, "\n")
+	inCode := false
+	prevContinuation := false
+
+	for _, line := range lines {
+		if strings.HasPrefix(strings.TrimSpace(line), "```") {
+			inCode = !inCode
+			prevContinuation = false
+			continue
+		}
+		if inCode {
+			prevContinuation = false
+			continue
+		}
+
+		trimmed := strings.TrimSpace(line)
+		if trimmed == "" || isStructuralLine(trimmed) {
+			prevContinuation = false
+			continue
+		}
+
+		if prevContinuation {
+			return true
+		}
+		prevContinuation = true
+	}
+	return false
+}
+
+func isStructuralLine(line string) bool {
+	if line[0] == '#' || line[0] == '>' || line[0] == '-' || line[0] == '*' || line[0] == '|' {
+		return true
+	}
+	for i, r := range line {
+		if r == '.' && i > 0 {
+			return true
+		}
+		if !unicode.IsDigit(r) {
+			break
+		}
+	}
+	return false
 }

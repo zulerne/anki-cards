@@ -89,7 +89,7 @@ func MarkdownToHTML(md string) string {
 
 func safeLanguage(lang string) string {
 	for _, r := range lang {
-		if !(unicode.IsLetter(r) || unicode.IsDigit(r) || r == '-' || r == '_') {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '-' && r != '_' {
 			return ""
 		}
 	}
